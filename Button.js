@@ -1,3 +1,4 @@
+{	// *** Mouse Inputs ***
 var mousePosition = new Vector2(0, 0);
 var money = 100;
 
@@ -14,8 +15,9 @@ function mouseDown(e)
 	clicked = true;
 }
 canvas.addEventListener('mousedown', mouseDown);
+}
 
-var Button = function(item, vec_p)
+var Slot = function(item, vec_p)
 {
 	this.item = item;
 	this.image = document.createElement("img");
@@ -24,7 +26,7 @@ var Button = function(item, vec_p)
 	this.position = vec_p;
 }
 
-Button.prototype.MouseOver = function()
+Slot.prototype.MouseOver = function()
 {
 	if(mousePosition.x >= this.position.x &&
 	   mousePosition.x <= this.position.x + this.size.x &&
@@ -39,13 +41,18 @@ Button.prototype.MouseOver = function()
 	}
 }
 
-Button.prototype.draw = function()
+Slot.prototype.draw = function(stlye)	// Style = 1: Draw Image		Style = 0: Draw rectangle
 {
-	context.fillStyle = "#000";
-	//context.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-	context.drawImage(this.image, this.position.x, this.position.y);
-	context.fillStyle = "#fff";
-	context.drawImage(this.item.icon, this.position.x + 14, this.position.y + 14);
-	//context.fillText(this.item.name, this.position.x, this.position.y + 22, this.size.x, this.size.y);
-	//context.fillText("$" + this.item.cost, this.position.x + 12, this.position.y + 44, this.size.x, this.size.y);
+	if(style === 0 || style === "undefined")
+	{
+		context.fillStyle = "#000";
+		context.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+		context.fillText(this.item.name, this.position.x, this.position.y + 22, this.size.x, this.size.y);
+	}
+	else
+	{
+		context.drawImage(this.image, this.position.x, this.position.y);
+		context.fillStyle = "#fff";
+		context.drawImage(this.item.image.icon, this.position.x + 14, this.position.y + 14);
+	}
 }

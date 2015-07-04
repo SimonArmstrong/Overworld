@@ -1,4 +1,4 @@
-//Basic Vector2 Math Class
+//Vector2 class with generic Vector functions
 
 var Vector2 = function(x, y){
 	this.x = x;
@@ -16,8 +16,3 @@ Vector2.prototype.multiply = function(vec){
 Vector2.prototype.divide = function(vec){
 	return new Vector2(this.x / vec.x, this.y / vedc.y);
 }
-Vector2.prototype.set = function(x, y) 
-{
-	this.x = x;
-	this.y = y;
-};

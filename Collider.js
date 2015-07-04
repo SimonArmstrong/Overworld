@@ -1,4 +1,4 @@
-var Collider = function(tag, vec_s, vec_p){
+var Collider = function(tag, vec_p, vec_s){
 	this.tag = tag;
 	this.scale = vec_s;
 	this.position = vec_p;
