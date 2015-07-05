@@ -1,20 +1,21 @@
 var Inventory = function()
 {
-	this.space = 10;
+	this.rows = 5;
+	this.columns = 2;
 	this.slots = [];
+	this.open = false;
 }
 
 Inventory.prototype.draw = function()
 {
-	for(var x = 0; x <= this.space / 2; x++)
+	this.slots = [];
+	for(var x = 0; x < this.rows; x++)
 	{
-		for(var y = 0; y <= this.space / 2; y++)
+		for(var y = 0; y < this.columns; y++)
 		{
-			//draw the slots
-			if(this.slots[x][y].item != "undefined")
-			{
-				//draw ItemImage.normal in that slot
-			}
+			this.slots.push(new Slot(new Vector2(2 + (34 * x), 2 + (34 * y))));
+			this.slots[y].draw(1);
 		}
+		this.slots[x].draw(1);
 	}
 }

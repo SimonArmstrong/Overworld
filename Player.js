@@ -10,6 +10,7 @@ var Player = function()
 	this.position = new Vector2(CENTER.x - (this.scale.x / 2), CENTER.y - (this.scale.y / 2));
 	this.collider = new Collider("player", this.position, this.scale);
 	this.direction = DIR_LEFT;
+	this.moving = false;
 	this.ObjectType = "Entity";
 	
 	//Image
@@ -21,27 +22,61 @@ var Player = function()
 	this.inventory = new Inventory();
 }
 
-Player.prototype.update = function(deltaTime)
+Player.prototype.input = function()
 {
 	if(Input.KeyDown(Input.KEY_W))
 	{
-		this.position.y -= this.speed * deltaTime
+		this.moving = true;
 		this.direction = DIR_UP;
 	}
-	if(Input.KeyDown(Input.KEY_S))
+	else if(Input.KeyDown(Input.KEY_S))
 	{
-		this.position.y += this.speed * deltaTime
+		this.moving = true;
 		this.direction = DIR_DOWN;
 	}
-	if(Input.KeyDown(Input.KEY_A))
+	else if(Input.KeyDown(Input.KEY_A))
 	{
-		this.position.x -= this.speed * deltaTime
+		this.moving = true;
 		this.direction = DIR_LEFT;
 	}
-	if(Input.KeyDown(Input.KEY_D))
+	else if(Input.KeyDown(Input.KEY_D))
 	{
-		this.position.x += this.speed * deltaTime
+		this.moving = true;
 		this.direction = DIR_RIGHT;
+	}
+	else
+	{
+		this.moving = false;
+	}
+	
+	if(Input.keys[Input.I] === true && this.inventory.open === false)
+	{
+		this.inventory.draw();
+		this.inventory.open = true;
+	}
+	else if(Input.keys[Input.I] === true && this.inventory.open === true)
+	{
+		this.inventory.open = false;
+	}
+}
+
+Player.prototype.update = function(deltaTime)
+{
+	if(this.direction === DIR_UP && this.moving)
+	{
+		this.position.y -= this.speed * deltaTime;
+	}
+	if(this.direction === DIR_DOWN && this.moving)
+	{
+		this.position.y += this.speed * deltaTime;
+	}
+	if(this.direction === DIR_LEFT && this.moving)
+	{
+		this.position.x -= this.speed * deltaTime;
+	}
+	if(this.direction === DIR_RIGHT && this.moving)
+	{
+		this.position.x += this.speed * deltaTime;
 	}
 }
 

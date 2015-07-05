@@ -21,8 +21,8 @@ var Slot = function(vec_p)
 {
 	this.item = "undefined";
 	this.image = document.createElement("img");
-	this.image.src = "Button.png";
-	this.size = new Vector2(64, 64);
+	this.image.src = "slot.png";
+	this.size = new Vector2(32, 32);
 	this.position = vec_p;
 }
 
@@ -41,18 +41,18 @@ Slot.prototype.MouseOver = function()
 	}
 }
 
-Slot.prototype.draw = function(stlye)	// Style = 1: Draw Image		Style = 0: Draw rectangle
+Slot.prototype.draw = function(style)	// Style = 1: Draw Image		Style = 0: Draw rectangle
 {
 	if(style === 0 || style === "undefined")
 	{
-		context.fillStyle = "#000";
+		context.fillStyle = "#fff";
 		context.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-		context.fillText(this.item.name, this.position.x, this.position.y + 22, this.size.x, this.size.y);
+		//context.fillText(this.item.name, this.position.x, this.position.y + 22, this.size.x, this.size.y);
 	}
 	else
 	{
 		context.drawImage(this.image, this.position.x, this.position.y);
 		context.fillStyle = "#fff";
-		context.drawImage(this.item.image.icon, this.position.x + 14, this.position.y + 14);
+		context.drawImage(this.image, this.position.x, this.position.y);
 	}
 }
