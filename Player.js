@@ -3,6 +3,13 @@ var DIR_UP    = 1;
 var DIR_RIGHT = 2;
 var DIR_DOWN  = 3;
 
+//Image loads
+var imageRight = document.createElement("img");
+imageRight.src = "player_right.png";
+
+var imageLeft = document.createElement("img");
+imageLeft.src = "player.png";
+
 var Player = function()
 {
 	//Transform details
@@ -14,8 +21,7 @@ var Player = function()
 	this.ObjectType = "Entity";
 	
 	//Image
-	this.image = document.createElement("img");
-	this.image.src = "player.png";
+	this.image = imageLeft;
 	
 	//Stats
 	this.speed = 180;
@@ -51,7 +57,6 @@ Player.prototype.input = function()
 	
 	if(Input.keys[Input.I] === true && this.inventory.open === false)
 	{
-		this.inventory.draw();
 		this.inventory.open = true;
 	}
 	else if(Input.keys[Input.I] === true && this.inventory.open === true)
@@ -73,9 +78,11 @@ Player.prototype.update = function(deltaTime)
 	if(this.direction === DIR_LEFT && this.moving)
 	{
 		this.position.x -= this.speed * deltaTime;
+		this.image = imageLeft;
 	}
 	if(this.direction === DIR_RIGHT && this.moving)
 	{
+		this.image = imageRight;
 		this.position.x += this.speed * deltaTime;
 	}
 }
@@ -84,3 +91,5 @@ Player.prototype.draw = function()
 {
 	context.drawImage(this.image, this.position.x, this.position.y);
 }
+
+var player = new Player();

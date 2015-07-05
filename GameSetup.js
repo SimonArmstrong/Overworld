@@ -13,8 +13,6 @@ var BOTTOM_LEFT 	= new Vector2(canvas.width,					    0);
 var BOTTOM 			= new Vector2(canvas.width, 	canvas.height / 2);
 var BOTTOM_RIGHT 	= new Vector2(canvas.width, 		canvas.height);
 
-
-
 var startFrameMillis = Date.now();
 var endFrameMillis = Date.now();
 

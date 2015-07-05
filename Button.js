@@ -1,21 +1,37 @@
 {	// *** Mouse Inputs ***
 	var mousePosition = new Vector2(0, 0);
-	var money = 100;
-
+	var mouseIcon = document.createElement("img");
+	mouseIcon.src = "MouseIcon.png";
+	var mouseMoving = false;
+	
 	function mouseMove(e)
 	{
+		if(player.inventory.open)
+		{
+			player.inventory.draw();
+		}
 		mousePosition = new Vector2(e.clientX, e.clientY);
+		mouseMoving = true;
 	}
-	canvas.addEventListener('mousemove', mouseMove);
 
 	var clicked = false;
+	var dblClicked = false;
 
 	function mouseDown(e)
 	{
-		clicked = !clicked;
+		clicked = true;
 	}
-	canvas.addEventListener('mousedown', mouseDown);
-	canvas.addEventListener('mouseup', mouseDown);
+	
+	function doubleClick(e)
+	{
+		dblClicked = true;
+		//dblClicked = false;
+	}
+	
+	function mouseUp(e)
+	{
+		clicked = false;
+	}
 }
 
 var slotImage = document.createElement("img");
