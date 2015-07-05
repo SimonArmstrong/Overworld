@@ -1,5 +1,6 @@
-var ItemImage = function()
+var ItemImage = function(icon)
 {
-	this.icon = "";
-	this.sprite = "";
+	this.icon = document.createElement("img");
+	this.icon.src = icon;
+	//this.sprite = sprite;
 }

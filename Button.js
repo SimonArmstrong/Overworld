@@ -1,28 +1,32 @@
 {	// *** Mouse Inputs ***
-var mousePosition = new Vector2(0, 0);
-var money = 100;
+	var mousePosition = new Vector2(0, 0);
+	var money = 100;
 
-function mouseMove(e)
-{
-	mousePosition = new Vector2(e.clientX, e.clientY);
+	function mouseMove(e)
+	{
+		mousePosition = new Vector2(e.clientX, e.clientY);
+	}
+	canvas.addEventListener('mousemove', mouseMove);
+
+	var clicked = false;
+
+	function mouseDown(e)
+	{
+		clicked = !clicked;
+	}
+	canvas.addEventListener('mousedown', mouseDown);
+	canvas.addEventListener('mouseup', mouseDown);
 }
-canvas.addEventListener('mousemove', mouseMove);
 
-var clicked = false;
+var slotImage = document.createElement("img");
+slotImage.src = "slot.png";
 
-function mouseDown(e)
-{
-	clicked = true;
-}
-canvas.addEventListener('mousedown', mouseDown);
-}
-
-var Slot = function()
+var Slot = function(vec_p)
 {
 	this.item = "undefined";
-	this.image = document.createElement("img");
-	this.image.src = "slot.png";
+	this.image = slotImage;
 	this.size = new Vector2(32, 32);
+	this.position = vec_p;
 }
 
 Slot.prototype.MouseOver = function()
@@ -40,7 +44,7 @@ Slot.prototype.MouseOver = function()
 	}
 }
 
-Slot.prototype.draw = function(style, vec_p)	// Style = 1: Draw Image		Style = 0: Draw rectangle
+Slot.prototype.draw = function(style)	// Style = 1: Draw Image		Style = 0: Draw rectangle
 {
 	if(style === 0 || style === "undefined")
 	{
@@ -51,6 +55,8 @@ Slot.prototype.draw = function(style, vec_p)	// Style = 1: Draw Image		Style = 0
 	else
 	{
 		context.fillStyle = "#fff";
-		context.drawImage(this.image, vec_p.x, vec_p.y);
+		context.drawImage(this.image, this.position.x, this.position.y);
+		if(this.item != "undefined")
+			context.drawImage(this.item.image.icon, this.position.x, this.position.y);
 	}
 }
