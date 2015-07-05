@@ -20,7 +20,10 @@ var Container = function(contents, vec_p)
 {
 	this.position = vec_p;
 	this.contents = [];
-	this.contents.push(contents);
+	for(var i = 0; i < contents.length; i++)
+	{
+		this.contents.push(contents[i]);
+	}
 	this.type = "Chest";
 	this.rarity = COMMON;
 	this.image;
@@ -50,17 +53,16 @@ Container.prototype.Open = function()
 	for(var i = 0; i < this.contents.length; i++)
 	{
 		player.inventory.Add(this.contents[i], "nearest");
-		this.contents = [];
 	}
-	
+	this.contents = [];
 	return true;
 }
 
 Container.prototype.Add = function(item)
 {
-	for(var i = 0; i < contents.length; i++)
+	for(var i = 0; i < this.contents.length; i++)
 	{
-		contents[i] = item;
+		this.contents[i] = item;
 	}
 }
 

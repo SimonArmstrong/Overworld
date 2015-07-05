@@ -3,7 +3,7 @@
 	var mouseIcon = document.createElement("img");
 	mouseIcon.src = "MouseIcon.png";
 	var mouseMoving = false;
-	
+	var draggingInventory = false;
 	function mouseMove(e)
 	{
 		if(player.inventory.open)
@@ -30,6 +30,10 @@
 	
 	function mouseUp(e)
 	{
+		if(draggingInventory === true)
+		{
+			draggingInventory = false;
+		}
 		clicked = false;
 	}
 }
