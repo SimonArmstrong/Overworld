@@ -17,13 +17,12 @@ function mouseDown(e)
 canvas.addEventListener('mousedown', mouseDown);
 }
 
-var Slot = function(vec_p)
+var Slot = function()
 {
 	this.item = "undefined";
 	this.image = document.createElement("img");
 	this.image.src = "slot.png";
 	this.size = new Vector2(32, 32);
-	this.position = vec_p;
 }
 
 Slot.prototype.MouseOver = function()
@@ -41,7 +40,7 @@ Slot.prototype.MouseOver = function()
 	}
 }
 
-Slot.prototype.draw = function(style)	// Style = 1: Draw Image		Style = 0: Draw rectangle
+Slot.prototype.draw = function(style, vec_p)	// Style = 1: Draw Image		Style = 0: Draw rectangle
 {
 	if(style === 0 || style === "undefined")
 	{
@@ -51,8 +50,7 @@ Slot.prototype.draw = function(style)	// Style = 1: Draw Image		Style = 0: Draw 
 	}
 	else
 	{
-		context.drawImage(this.image, this.position.x, this.position.y);
 		context.fillStyle = "#fff";
-		context.drawImage(this.image, this.position.x, this.position.y);
+		context.drawImage(this.image, vec_p.x, vec_p.y);
 	}
 }
