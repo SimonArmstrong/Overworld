@@ -17,9 +17,9 @@ function mouseDown(e)
 canvas.addEventListener('mousedown', mouseDown);
 }
 
-var Slot = function(item, vec_p)
+var Slot = function(vec_p)
 {
-	this.item = item;
+	this.item = "undefined";
 	this.image = document.createElement("img");
 	this.image.src = "Button.png";
 	this.size = new Vector2(64, 64);
