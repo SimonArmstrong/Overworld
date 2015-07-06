@@ -5,8 +5,9 @@ var wallB = new Wall(new Vector2(0, canvas.height - 32), new Vector2(canvas.widt
 var wallL = new Wall(TOP_LEFT, new Vector2(32, canvas.height), "WallTestTile.png");
 var wallR = new Wall(new Vector2(canvas.width - 32, 0), new Vector2(32, canvas.height), "WallTestTile.png");
 
-var chest = new Container([Items[0], Items[2]], new Vector2(player.position.x - 64, player.position.y));
-var chest2 = new Container([Items[1], Items[4], Items[4]], new Vector2(player.position.x + 64, player.position.y));
+var chest = new Container([Potions[1], Potions[1]], new Vector2(player.position.x - 64, player.position.y), COMMON);
+var chest2 = new Container([Items[1], Potions[0], Potions[0]], new Vector2(player.position.x + 64, player.position.y), RARE);
+var chest2 = new Container([Items[1], Potions[0], Potions[0]], new Vector2(player.position.x + 64, player.position.y), GREAT);
 
 function checkInput()
 {
@@ -46,51 +47,42 @@ function run()
 	
 	for(var i = 0; i < chests.length; i++)
 	{
+		chests[i].draw();
 		if(chests[i].MouseOver() && dblClicked === true)
 		{
 			chests[i].Open();
 			dblClicked = false;
 		}
-		chests[i].draw();
+		if(chests[i].open)
+		{
+			chests[i].inventory.draw();
+			chests[i].inventory.update();
+		}
 	}
 	
-	if(player.inventory.open === true)
-	{
+	
+	//Player Drawing
+	if(player.inventory.open === true){
 		player.inventory.draw();
 	}
-	else
-	{
+	else{
 		player.update(deltaTime);
 	}
+	
+	if(dialogueWindow.show)
+	{
+		dialogueWindow.draw();
+		dialogueWindow.update();
+	}
+	
 	if(mouseMoving){
 		context.drawImage(mouseIcon, mousePosition.x, mousePosition.y);
 	}
-	if(player.inventory.MouseOver() && clicked === true)
-	{
-		draggingInventory = true;
-	}
+
+	player.inventory.update();
+	player.Stats.update();
+	player.Vitals.update();
 	
-	if(draggingInventory)
-	{
-		player.inventory.position = new Vector2(mousePosition.x - (player.inventory.scale.x / 2), mousePosition.y - 16);
-	}
-	
-	var ind = -1;
-	for(var y = 0; y < player.inventory.rows; y++)
-	{
-		for(var x = 0; x < player.inventory.columns; x++)
-		{
-			ind++;
-			if(player.inventory.slots[ind].item.amount > 1)
-			{
-				context.fillText(player.inventory.slots[ind].item.amount, player.inventory.position.x + 11 + (34 * x), player.inventory.position.y + 30 + (34 * y));
-			}
-		}
-	}
-	if(player.inventory.selectedItem != "undefined")
-	{
-		context.drawImage(player.inventory.selectedItem.image.icon, mousePosition.x, mousePosition.y);
-	}
 }
 
 States();

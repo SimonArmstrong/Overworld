@@ -3,12 +3,14 @@
 	var mouseIcon = document.createElement("img");
 	mouseIcon.src = "MouseIcon.png";
 	var mouseMoving = false;
-	var draggingInventory = false;
+	var mouseUP = false;
+	var mouseDOWN = false;
+	
 	function mouseMove(e)
 	{
 		if(player.inventory.open)
 		{
-			player.inventory.draw();
+			//player.inventory.draw();
 		}
 		mousePosition = new Vector2(e.clientX, e.clientY);
 		mouseMoving = true;
@@ -20,6 +22,9 @@
 	function mouseDown(e)
 	{
 		clicked = true;
+		mouseUP = false;
+		mouseDOWN = true;
+		mouseMove = false;
 	}
 	
 	function doubleClick(e)
@@ -30,10 +35,8 @@
 	
 	function mouseUp(e)
 	{
-		if(draggingInventory === true)
-		{
-			draggingInventory = false;
-		}
+		mouseUP = true;
+		mouseDOWN = false;
 		clicked = false;
 	}
 }

@@ -24,8 +24,9 @@ var Player = function()
 	this.image = imageLeft;
 	
 	//Stats
-	this.speed = 180;
-	this.inventory = new Inventory();
+	this.inventory = new Inventory(5, 5, "I N V E N T O R Y");
+	this.Stats = new Stats(0, 0, 180);
+	this.Vitals = new Vitals(100, 100, 100);
 }
 
 Player.prototype.input = function()
@@ -69,21 +70,21 @@ Player.prototype.update = function(deltaTime)
 {
 	if(this.direction === DIR_UP && this.moving)
 	{
-		this.position.y -= this.speed * deltaTime;
+		this.position.y -= this.Stats.speed * deltaTime;
 	}
 	if(this.direction === DIR_DOWN && this.moving)
 	{
-		this.position.y += this.speed * deltaTime;
+		this.position.y += this.Stats.speed * deltaTime;
 	}
 	if(this.direction === DIR_LEFT && this.moving)
 	{
-		this.position.x -= this.speed * deltaTime;
+		this.position.x -= this.Stats.speed * deltaTime;
 		this.image = imageLeft;
 	}
 	if(this.direction === DIR_RIGHT && this.moving)
 	{
 		this.image = imageRight;
-		this.position.x += this.speed * deltaTime;
+		this.position.x += this.Stats.speed * deltaTime;
 	}
 }
 

@@ -1,17 +1,24 @@
 var hilightImage = document.createElement("img");
 hilightImage.src = "highlight.png";
+var newItemImage = document.createElement("img");
+newItemImage.src = "newItem.png";
+
 var selectedItemIndex = "";
-var Inventory = function()
+var selectedItem = "undefined";
+
+var Inventory = function(rows, columns, title)
 {
-	this.rows = 5;
-	this.columns = 5;
+	this.title = title;
+	this.dragging = false;
+	this.rows = rows;
+	this.columns = columns;
 	this.space = this.rows * this.columns;
 	this.slots = [];
 	this.open = false;
-	this.scale = new Vector2(this.rows * 34 + 20, this.columns * 34 + 40);
+	this.scale = new Vector2(this.columns * 34 + 20, this.rows * 34 + 40);
 	this.position = new Vector2(0, 0);
-	this.selectedItem = "undefined";
 	this.highlightedSlot;
+	this.newItemSlots = [];
 	for (var i = 0; i < this.space; i++)
 	{
 		this.slots.push(new Slot(new Vector2(0, 0)));
@@ -27,6 +34,7 @@ Inventory.prototype.Add = function(item, index)
 			if(i === index)
 			{
 				this.slots[i].item = item;
+				this.newItemSlot = this.slots[i];
 				//console.log("Added " + item.name + " to slot " + i)
 				break;
 			}
@@ -43,6 +51,7 @@ Inventory.prototype.Add = function(item, index)
 					this.slots[i].item.amount += this.slots[i].item.amount;
 				}
 				this.slots[i].item = item;
+				this.newItemSlots.push(this.slots[i]);
 				//console.log("Added " + item.name + " to slot " + i)
 				break;
 			}
@@ -78,54 +87,82 @@ Inventory.prototype.Remove = function(index)
 
 Inventory.prototype.draw = function()
 {
-	
-	drawRect("#333", this.position, this.scale);
-	context.fillStyle = "#fff";
-	context.font = "12px Trebuchet MS";
-	var title = "I N V E N T O R Y";
-	context.fillText(title, this.position.x + (this.scale.x / 2) - (context.measureText(title).width / 2), this.position.y + 20);
-	
-	var i = -1;
-	for(var y = 0; y < this.rows; y++)
-	{
-		for(var x = 0; x < this.columns; x++)
+	if(this.open)
+	{	
+		drawRect("#333", this.position, this.scale);
+		context.fillStyle = "#fff";
+		context.font = "12px Trebuchet MS";
+		context.fillText(this.title, this.position.x + (this.scale.x / 2) - (context.measureText(this.title).width / 2), this.position.y + 20);
+		
+		var i = -1;
+		for(var y = 0; y < this.rows; y++)
 		{
-			i++;
-			this.slots[i].position = new Vector2(this.position.x + 11 + (34 * x), this.position.y + 30 + (34 * y));
-			this.slots[i].draw(1);
-			if(this.slots[i].MouseOver())
+			for(var x = 0; x < this.columns; x++)
 			{
-				this.highlightedSlot = this.slots[i];
-				context.drawImage(hilightImage, this.slots[i].position.x, this.slots[i].position.y);
-				
-				if(dblClicked && this.slots[i].item != "undefined" && this.selectedItem === "undefined")
+				i++;
+				this.slots[i].position = new Vector2(this.position.x + 11 + (34 * x), this.position.y + 30 + (34 * y));
+				this.slots[i].draw(1);
+				if(this.slots[i].MouseOver())
 				{
-					this.selectedItem = this.highlightedSlot.item;
-					selectedItemIndex = i;
-					this.Remove(i);
-					dblClicked = false;
+					this.highlightedSlot = this.slots[i];
+					context.drawImage(hilightImage, this.slots[i].position.x, this.slots[i].position.y);
+					if(this.slots[i].item != "undefined")
+					{
+						this.newItemSlots[i] = "undefined";
+					}
+					if(dblClicked && this.slots[i].item.useable)
+					{
+						if(this.slots[i].item.amount >= 1)
+						{
+							console.log("Player just used " + this.slots[i].item.name);
+							dblClicked = false;
+							this.slots[i].item.amount --;
+						}
+					}
+					else if(clicked && this.slots[i].item != "undefined" && selectedItem === "undefined")
+					{
+						selectedItem = this.highlightedSlot.item;
+						selectedItemIndex = i;
+						this.Remove(i);
+					}
+					else if(!clicked && this.slots[i].item === "undefined")
+					{
+						this.highlightedSlot.item = selectedItem;
+						selectedItem = "undefined";
+					}
+					else if(!clicked && this.slots[i].item.stackable === true && selectedItem.stackable === true && selectedItem === this.highlightedSlot.item)
+					{
+						this.slots[i].item.amount += selectedItem.amount;
+						selectedItem = "undefined";
+					}
+					else if(!clicked && this.slots[i].item != "undefined" && selectedItem != "undefined")
+					{
+						this.slots[i].item = this.highlightedSlot.item;
+						this.highlightedSlot.item = selectedItem;
+						selectedItem = "undefined";
+						//this.selectedItem = this.highlightedSlot.item;
+					}
+					if(this.slots[i].item.amount === 0)
+					{
+						dblClicked = false;
+						this.Remove(i);
+					}
 				}
-				else if(clicked && this.slots[i].item === "undefined")
+				else if(!clicked && (mousePosition.x <= this.position.x ||
+					mousePosition.x >= this.position.x + this.scale.x ||
+					mousePosition.y <= this.position.y ||
+					mousePosition.y >= this.position.y + this.scale.y))
 				{
-					this.highlightedSlot.item = this.selectedItem;
-					this.selectedItem = "undefined";
+					//if(selectedItem != "undefined"){selectedItem.drop();}
+					//selectedItem = "undefined";
 				}
-				else if(clicked && this.slots[i].item.stackable === true && this.selectedItem.stackable === true && this.selectedItem === this.highlightedSlot.item)
+				//context.fillText(i, this.position.x + 4 + (34 * x), this.position.y + 4 + (34 * y));
+				//console.log("slot " + (x + y) + "'s position is: " + "X: " + this.slots[y].position.x + " Y: " + this.slots[y].position.y);
+				if(this.slots[i] === this.newItemSlots[i] && this.newItemSlots.length > 0 && this.newItemSlots[i] != undefined)
 				{
-					this.slots[i].item.amount += this.selectedItem.amount;
-					this.selectedItem = "undefined";
+					context.drawImage(newItemImage, this.slots[i].position.x, this.slots[i].position.y);
 				}
-				else if(clicked && this.slots[i].item != "undefined" && this.selectedItem != "undefined")
-				{
-					this.slots[selectedItemIndex].item = this.highlightedSlot.item;
-					this.highlightedSlot.item = this.selectedItem;
-					this.selectedItem = "undefined";
-					//this.selectedItem = this.highlightedSlot.item;
-				}
-
 			}
-			//context.fillText(i, this.position.x + 4 + (34 * x), this.position.y + 4 + (34 * y));
-			//console.log("slot " + (x + y) + "'s position is: " + "X: " + this.slots[y].position.x + " Y: " + this.slots[y].position.y);
 		}
 	}
 }
@@ -142,5 +179,45 @@ Inventory.prototype.MouseOver = function()
 	else
 	{
 		return false;
+	}
+}
+
+Inventory.prototype.update = function()
+{
+	if(this.open)
+	{
+		if(this.MouseOver() && mouseDOWN === true){
+			this.dragging = true;
+		}
+		else if(mouseUP === true)
+		{
+			this.dragging = false;
+		}
+		
+		if(this.dragging)
+		{
+			this.position = new Vector2(mousePosition.x - (this.scale.x / 2), mousePosition.y - 16);
+		}
+		
+		if(this.MouseOver() && dblClicked === true)
+		{
+			this.open = false;
+			dblClicked = false;
+		}
+	}
+	var ind = -1;
+	for(var y = 0; y < this.rows; y++)
+	{
+		for(var x = 0; x < this.columns; x++)
+		{
+			ind++;
+			if(this.slots[ind].item.amount > 1)
+			{
+				context.fillText(this.slots[ind].item.amount, this.position.x + 12 + (34 * x), this.position.y + 61 + (34 * y));
+			}
+		}
+	}
+	if(selectedItem != "undefined"){
+		context.drawImage(selectedItem.image.icon, mousePosition.x, mousePosition.y);
 	}
 }
