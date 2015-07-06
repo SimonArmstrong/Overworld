@@ -7,7 +7,7 @@ var wallR = new Wall(new Vector2(canvas.width - 32, 0), new Vector2(32, canvas.h
 
 var chest = new Container([Potions[1], Potions[1]], new Vector2(player.position.x - 64, player.position.y), COMMON);
 var chest2 = new Container([Items[1], Potions[0], Potions[0]], new Vector2(player.position.x + 64, player.position.y), RARE);
-var chest2 = new Container([Items[1], Potions[0], Potions[0]], new Vector2(player.position.x + 64, player.position.y), GREAT);
+var chest3 = new Container([Weapons[0], Armour[0], Potions[0]], new Vector2(player.position.x, player.position.y + 64), GREAT);
 
 function checkInput()
 {
@@ -17,6 +17,7 @@ function checkInput()
 var chests = [];
 chests.push(chest);
 chests.push(chest2);
+chests.push(chest3);
 
 
 colliders.push(wallT.collider);
@@ -75,10 +76,14 @@ function run()
 		dialogueWindow.update();
 	}
 	
+	player.drawUI();
+	
 	if(mouseMoving){
 		context.drawImage(mouseIcon, mousePosition.x, mousePosition.y);
 	}
-
+	
+	player.Vitals.health -= 1 * deltaTime;
+	
 	player.inventory.update();
 	player.Stats.update();
 	player.Vitals.update();

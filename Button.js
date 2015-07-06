@@ -50,6 +50,7 @@ var Slot = function(vec_p)
 	this.image = slotImage;
 	this.size = new Vector2(32, 32);
 	this.position = vec_p;
+	this.amount = 1;
 }
 
 Slot.prototype.MouseOver = function()

@@ -48,7 +48,7 @@ Inventory.prototype.Add = function(item, index)
 			{
 				if(this.slots[i].item === this.slots[i].item && this.slots[i].item.stackable)
 				{
-					this.slots[i].item.amount += this.slots[i].item.amount;
+					//this.slots[i].amount += this.slots[i].amount;
 				}
 				this.slots[i].item = item;
 				this.newItemSlots.push(this.slots[i]);
@@ -106,6 +106,7 @@ Inventory.prototype.draw = function()
 				{
 					this.highlightedSlot = this.slots[i];
 					context.drawImage(hilightImage, this.slots[i].position.x, this.slots[i].position.y);
+
 					if(this.slots[i].item != "undefined")
 					{
 						this.newItemSlots[i] = "undefined";
@@ -114,20 +115,23 @@ Inventory.prototype.draw = function()
 					{
 						if(this.slots[i].item.amount >= 1)
 						{
-							console.log("Player just used " + this.slots[i].item.name);
+							this.slots[i].item.use();
 							dblClicked = false;
 							this.slots[i].item.amount --;
 						}
 					}
 					else if(clicked && this.slots[i].item != "undefined" && selectedItem === "undefined")
 					{
-						selectedItem = this.highlightedSlot.item;
 						selectedItemIndex = i;
+						selectedItem = this.highlightedSlot.item;
+						//this.slots[i].amount -= this.slots[i].item.amount;
 						this.Remove(i);
 					}
 					else if(!clicked && this.slots[i].item === "undefined")
 					{
+						//this.highlightedSlot.item.amount += this.selectedItem.amount;
 						this.highlightedSlot.item = selectedItem;
+						
 						selectedItem = "undefined";
 					}
 					else if(!clicked && this.slots[i].item.stackable === true && selectedItem.stackable === true && selectedItem === this.highlightedSlot.item)
@@ -137,7 +141,7 @@ Inventory.prototype.draw = function()
 					}
 					else if(!clicked && this.slots[i].item != "undefined" && selectedItem != "undefined")
 					{
-						this.slots[i].item = this.highlightedSlot.item;
+						this.slots[selectedItemIndex].item = this.highlightedSlot.item;
 						this.highlightedSlot.item = selectedItem;
 						selectedItem = "undefined";
 						//this.selectedItem = this.highlightedSlot.item;
@@ -186,7 +190,7 @@ Inventory.prototype.update = function()
 {
 	if(this.open)
 	{
-		if(this.MouseOver() && mouseDOWN === true){
+		if(this.MouseOver() && mouseDOWN === true && selectedItem === "undefined"){
 			this.dragging = true;
 		}
 		else if(mouseUP === true)
@@ -211,7 +215,7 @@ Inventory.prototype.update = function()
 		for(var x = 0; x < this.columns; x++)
 		{
 			ind++;
-			if(this.slots[ind].item.amount > 1)
+			if(this.slots[ind].item.stackable)
 			{
 				context.fillText(this.slots[ind].item.amount, this.position.x + 12 + (34 * x), this.position.y + 61 + (34 * y));
 			}

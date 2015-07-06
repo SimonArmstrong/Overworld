@@ -27,6 +27,9 @@ var Player = function()
 	this.inventory = new Inventory(5, 5, "I N V E N T O R Y");
 	this.Stats = new Stats(0, 0, 180);
 	this.Vitals = new Vitals(100, 100, 100);
+	
+	//Equipment
+	//this.equipment = new Equipment();
 }
 
 Player.prototype.input = function()
@@ -91,6 +94,13 @@ Player.prototype.update = function(deltaTime)
 Player.prototype.draw = function()
 {
 	context.drawImage(this.image, this.position.x, this.position.y);
+}
+
+Player.prototype.drawUI = function()
+{
+	var healthWidth = this.Vitals.maxHealth;
+	drawRect("#000", new Vector2(canvas.width / 4, 6), new Vector2(128, 24));
+	drawRect("#f00", new Vector2(canvas.width / 4 + 2, 8), new Vector2((this.Vitals.health / this.Vitals.maxHealth) * 124, 20));
 }
 
 var player = new Player();

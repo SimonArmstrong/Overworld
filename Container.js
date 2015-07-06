@@ -69,6 +69,7 @@ Container.prototype.Open = function()
 	{
 		this.inventory.Add(this.contents[i], "nearest");
 	}
+	this.contents = [];
 	this.inventory.position = this.position;
 	this.inventory.open = true;
 	return true;
