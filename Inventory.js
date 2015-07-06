@@ -222,6 +222,6 @@ Inventory.prototype.update = function()
 		}
 	}
 	if(selectedItem != "undefined"){
-		context.drawImage(selectedItem.image.icon, mousePosition.x, mousePosition.y);
+		context.drawImage(selectedItem.image, mousePosition.x, mousePosition.y);
 	}
 }

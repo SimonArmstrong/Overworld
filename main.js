@@ -5,9 +5,7 @@ var wallB = new Wall(new Vector2(0, canvas.height - 32), new Vector2(canvas.widt
 var wallL = new Wall(TOP_LEFT, new Vector2(32, canvas.height), "WallTestTile.png");
 var wallR = new Wall(new Vector2(canvas.width - 32, 0), new Vector2(32, canvas.height), "WallTestTile.png");
 
-var chest = new Container([Potions[1], Potions[1]], new Vector2(player.position.x - 64, player.position.y), COMMON);
-var chest2 = new Container([Items[1], Potions[0], Potions[0]], new Vector2(player.position.x + 64, player.position.y), RARE);
-var chest3 = new Container([Weapons[0], Armour[0], Potions[0]], new Vector2(player.position.x, player.position.y + 64), GREAT);
+var chest = new Container([Potions[0], Potions[1]], new Vector2(player.position.x - 64, player.position.y), COMMON);
 
 function checkInput()
 {
@@ -16,17 +14,11 @@ function checkInput()
 
 var chests = [];
 chests.push(chest);
-chests.push(chest2);
-chests.push(chest3);
-
 
 colliders.push(wallT.collider);
 colliders.push(wallB.collider);
 colliders.push(wallL.collider);
 colliders.push(wallR.collider);
-colliders.push(chest.collider);
-colliders.push(chest2.collider);
-
 function run()
 {
 	var deltaTime = getDeltaTime();
@@ -77,17 +69,21 @@ function run()
 	}
 	
 	player.drawUI();
+	player.equipment.draw();
+	player.equipment.update();
 	
 	if(mouseMoving){
 		context.drawImage(mouseIcon, mousePosition.x, mousePosition.y);
 	}
 	
-	player.Vitals.health -= 1 * deltaTime;
+	player.health.amount -= 1 * deltaTime;
+	player.mana.amount -= 1 * deltaTime;
 	
 	player.inventory.update();
-	player.Stats.update();
-	player.Vitals.update();
-	
+	for(var i = 0; i < player.Stats.length; i++)
+	{
+		player.Stats[i].update();
+	}
 }
 
 States();

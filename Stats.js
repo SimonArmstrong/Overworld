@@ -1,48 +1,13 @@
-var Vitals = function(hp, mp, exp)
+var Stat = function(name, amt, max)
 {
-	this.maxHealth = hp;
-	this.health = hp;
-	
-	this.maxMana = mp;
-	this.mana = mp;
-	
-	this.expToLevel = exp;
-	this.exp = exp;
+	this.name = name;
+	this.amount = amt;
+	this.maximum = max;
 }
 
-Vitals.prototype.update = function()
+Stat.prototype.update = function()
 {
-	this.health = this.health;
-	this.mana = this.mana;
-	this.exp = this.exp;
-}
-
-Vitals.prototype.Set = function(hp, mp, exp)
-{
-	this.maxHealth = hp;
-	this.maxMana = mp;
-	this.expToLevel = exp;
-}
-
-//
-
-var Stats = function(atk, def, spd)
-{
-	this.attack = atk;
-	this.defense = def;
-	this.speed = spd;
-}
-
-Stats.prototype.Set = function(atk, def, spd)
-{
-	this.attack = atk;
-	this.defense = def;
-	this.speed = spd;
-}
-
-Stats.prototype.update = function()
-{
-	this.attack = this.attack;
-	this.defense = this.defense;
-	this.speed = this.speed;
+	this.name = this.name;
+	this.amount = this.amount;
+	this.maximum = this.maximum;
 }

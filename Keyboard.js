@@ -27,6 +27,17 @@ var Keyboard = function()
 	this.Q = 81;	
 	this.F = 70;
 	this.E = 69;	
+	
+	this.ONE   = 49;	
+	this.TWO   = 50;	
+	this.THREE = 51;	
+	this.FOUR  = 52;
+	this.FIVE  = 53;
+	this.SIX   = 54;
+	this.SEVEN = 55;
+	this.EIGHT = 56;
+	this.NINE  = 57;
+	this.ZERO  = 48;
 };
 
 Keyboard.prototype.onKeyDown = function(evt) 

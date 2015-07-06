@@ -23,13 +23,16 @@ var Player = function()
 	//Image
 	this.image = imageLeft;
 	
+	//Equipment
+	this.equipment = new Equipment();
+	this.hotbar = new Hotbar();
+	
 	//Stats
 	this.inventory = new Inventory(5, 5, "I N V E N T O R Y");
-	this.Stats = new Stats(0, 0, 180);
-	this.Vitals = new Vitals(100, 100, 100);
-	
-	//Equipment
-	//this.equipment = new Equipment();
+	this.health = new Stat("Health", 100, 100);
+	this.mana = new Stat("Mana", 100, 100);
+	this.speed = new Stat("Speed", 180, 250);
+	this.Stats = [];
 }
 
 Player.prototype.input = function()
@@ -67,27 +70,51 @@ Player.prototype.input = function()
 	{
 		this.inventory.open = false;
 	}
+	
+	if(Input.keys[Input.E] === true && this.equipment.open === false)
+	{
+		this.equipment.open = true;
+	}
+	else if(Input.keys[Input.E] === true && this.equipment.open === true)
+	{
+		this.equipment.open = false;
+	}
 }
 
 Player.prototype.update = function(deltaTime)
 {
 	if(this.direction === DIR_UP && this.moving)
 	{
-		this.position.y -= this.Stats.speed * deltaTime;
+		this.position.y -= this.speed.amount * deltaTime;
 	}
 	if(this.direction === DIR_DOWN && this.moving)
 	{
-		this.position.y += this.Stats.speed * deltaTime;
+		this.position.y += this.speed.amount * deltaTime;
 	}
 	if(this.direction === DIR_LEFT && this.moving)
 	{
-		this.position.x -= this.Stats.speed * deltaTime;
+		this.position.x -= this.speed.amount * deltaTime;
 		this.image = imageLeft;
 	}
 	if(this.direction === DIR_RIGHT && this.moving)
 	{
 		this.image = imageRight;
-		this.position.x += this.Stats.speed * deltaTime;
+		this.position.x += this.speed.amount * deltaTime;
+	}
+	this.Stats.push(this.health);
+	this.Stats.push(this.mana);
+	this.Stats.push(this.speed);
+	
+	for(var i = 0; i < this.Stats.length; i++)
+	{
+		if(this.Stats[i].amount > this.Stats[i].maximum)
+		{
+			this.Stats[i].amount = this.Stats[i].maximum;
+		}
+		if(this.Stats[i].amount <= 0)
+		{
+			this.Stats[i].amount = 0;
+		}
 	}
 }
 
@@ -98,9 +125,13 @@ Player.prototype.draw = function()
 
 Player.prototype.drawUI = function()
 {
-	var healthWidth = this.Vitals.maxHealth;
-	drawRect("#000", new Vector2(canvas.width / 4, 6), new Vector2(128, 24));
-	drawRect("#f00", new Vector2(canvas.width / 4 + 2, 8), new Vector2((this.Vitals.health / this.Vitals.maxHealth) * 124, 20));
+	var healthWidth = this.health.maximum;
+	drawRect("#000", new Vector2(canvas.width / 4, 6), new Vector2(128, 8));
+	drawRect("#f00", new Vector2(canvas.width / 4 + 2, 8), new Vector2((this.health.amount / this.health.maximum) * 124, 5));
+	var manaWidth = this.mana.maximum;
+	drawRect("#000", new Vector2(canvas.width / 4, 16), new Vector2(128, 8));
+	drawRect("#00f", new Vector2(canvas.width / 4 + 2, 18), new Vector2((this.mana.amount / this.mana.maximum) * 124, 5));
+	player.hotbar.draw();
 }
 
 var player = new Player();

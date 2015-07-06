@@ -81,6 +81,6 @@ Slot.prototype.draw = function(style)	// Style = 1: Draw Image		Style = 0: Draw 
 		context.fillStyle = "#fff";
 		context.drawImage(this.image, this.position.x, this.position.y);
 		if(this.item != "undefined")
-			context.drawImage(this.item.image.icon, this.position.x, this.position.y);
+			context.drawImage(this.item.image, this.position.x, this.position.y);
 	}
 }
