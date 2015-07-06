@@ -1,10 +1,5 @@
 var colliders = [];
 
-var wallT = new Wall(TOP_LEFT, new Vector2(canvas.width, 32), "WallTestTile.png");
-var wallB = new Wall(new Vector2(0, canvas.height - 32), new Vector2(canvas.width, 32), "WallTestTile.png");
-var wallL = new Wall(TOP_LEFT, new Vector2(32, canvas.height), "WallTestTile.png");
-var wallR = new Wall(new Vector2(canvas.width - 32, 0), new Vector2(32, canvas.height), "WallTestTile.png");
-
 var chest = new Container([Potions[0], Potions[1]], new Vector2(player.position.x - 64, player.position.y), COMMON);
 
 function checkInput()
@@ -15,10 +10,6 @@ function checkInput()
 var chests = [];
 chests.push(chest);
 
-colliders.push(wallT.collider);
-colliders.push(wallB.collider);
-colliders.push(wallL.collider);
-colliders.push(wallR.collider);
 function run()
 {
 	var deltaTime = getDeltaTime();
@@ -28,15 +19,11 @@ function run()
 	canvas.addEventListener('mousedown', mouseDown);
 	canvas.addEventListener('mouseup', mouseUp);
 	canvas.addEventListener('mousemove', mouseMove);
-	canvas.addEventListener('dblclick', doubleClick)
+	canvas.addEventListener('dblclick', doubleClick);
 	
 	drawRect("#000", TOP_LEFT, BOTTOM_RIGHT);
 	player.draw();
 	
-	wallT.draw();
-	wallB.draw();
-	wallL.draw();
-	wallR.draw();
 	
 	for(var i = 0; i < chests.length; i++)
 	{
@@ -58,9 +45,8 @@ function run()
 	if(player.inventory.open === true){
 		player.inventory.draw();
 	}
-	else{
-		player.update(deltaTime);
-	}
+
+	player.update(deltaTime);
 	
 	if(dialogueWindow.show)
 	{

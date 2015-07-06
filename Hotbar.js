@@ -169,6 +169,5 @@ Hotbar.prototype.draw = function()
 			if(this.slots[8].item != "undefined")
 				this.slots[8].item.use();
 		}
-		
 	}
 }
