@@ -26,6 +26,11 @@ var Equipment = function()
 	
 	this.highlightedSlot;
 	this.dragging = false;
+	
+	this.totalAttack = 0;
+	this.totalDefense = 0;
+	this.totalHealth = 0;
+	this.totalMana = 0;
 }
 
 Equipment.prototype.get = function()
@@ -87,12 +92,22 @@ Equipment.prototype.draw = function()
 	this.leftHandSlot.position    = new Vector2(this.position.x + 8, this.position.y + 74) ;
 	this.rightHandSlot.position   = new Vector2(this.position.x + 88, this.position.y + 74);
 	this.shoeSlot.position 		  = new Vector2(this.position.x + 48, this.position.y + 114);
+	
 	if(this.open)
 	{
-		drawRect("#333", this.position, this.scale);
+		drawRect("#333", this.position, new Vector2(this.scale.x, this.scale.y + 46));
+		drawRect("#222", this.position, new Vector2(this.scale.x, 24));
+		drawRect("#222", new Vector2(this.position.x + 4, this.position.y + 168), new Vector2(this.scale.x - 8, 34));
 		context.fillStyle = "#fff";
 		context.font = "12px Trebuchet MS";
-		context.fillText(this.title, this.position.x + (this.scale.x / 2) - (context.measureText(this.title).width / 2), this.position.y + 20);
+		context.fillText(this.title, this.position.x + (this.scale.x / 2) - (context.measureText(this.title).width / 2), this.position.y + 16);
+		context.fillText("TOTAL", this.position.x + (this.scale.x / 2) - (context.measureText("TOTAL").width / 2), this.scale.y + this.position.y);
+		context.fillStyle = "#888";
+		context.font = "10px Verdana";
+		context.fillText("ATK: " + this.totalAttack, this.position.x + 8, this.position.y + 182);
+		context.fillText("DEF: " + this.totalDefense, this.position.x + 64, this.position.y + 182);
+		context.fillText("HP: " + this.totalHealth, this.position.x + 8, this.position.y + 196);
+		context.fillText("MP: " + this.totalMana, this.position.x + 64, this.position.y + 196);
 		for(var i = 0; i < this.slots.length; i++)
 		{
 			this.slots[i].draw();

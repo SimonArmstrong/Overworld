@@ -85,26 +85,31 @@ Armour.prototype.use = function()
 //Potion
 Potions.push(new Potion("Health Potion", "Health", 80, "Potion", 1));
 Potions.push(new Potion("Mana Potion", "Mana", 80, "Potion", 1));
+Potions.push(new Potion("Health Cauldron", "Health", 100000, "Potion", 3));
 Potions.push(new Potion("EXP Potion", "Exp", 50, "Potion", 4));
 Potions.push(new Potion("Fried Egg", "Health", 30, "Potion", 0));
 Potions.push(new Potion("Hamburger", "Health", 40, "Potion", 0));
 Potions.push(new Potion("Cheese Toastie", "Health", 50, "Potion", 0));
 
-Weapons.push(new Weapon("Wooden Sword", 1, 1, "warrior", "Weapon", 1));
-Weapons.push(new Weapon("Steel Sword", 1, 1, "warrior", "Weapon", 2));
+Weapons.push(new Weapon("Wooden Sword", 2, 1, "warrior", "Weapon", 1));
+Weapons.push(new Weapon("Steel Sword", 4, 1, "warrior", "Weapon", 2));
 Weapons.push(new Weapon("Iron Shield", 1, 1, "warrior", "Shield", 2));
 Weapons.push(new Weapon("Twig", 1, 1, "warrior", "Weapon", 3));
-Weapons.push(new Weapon("Mithril Sword", 1, 1, "warrior", "Weapon", 4));
+Weapons.push(new Weapon("Mithril Sword", 15, 1, "warrior", "Weapon", 4));
 Weapons.push(new Weapon("Mithril Mace", 1, 1, "warrior", "Weapon", 4));;
 Weapons.push(new Weapon("Arcane Rod", 1, 1, "wizard", "Weapon", 4));
-Weapons.push(new Weapon("Twilight Shield", 1, 1, "warrior", "Shield", 4));
+Weapons.push(new Weapon("Twilight Shield", 7, 1, "warrior", "Shield", 4));
 
 Armours.push(new Armour("Bronze Armour", 1, 1, "warrior", "Chest", 1));
 Armours.push(new Armour("Iron Boots", 1, 1, "warrior", "Boots", 2));
 Armours.push(new Armour("Horned Helmet", 1, 1, "warrior", "Helmet", 3));
-Armours.push(new Armour("Wizard Hat", 1, 1, "warrior", "Helmet", 4));
 Armours.push(new Armour("Mithril Armour", 1, 1, "warrior", "Chest", 4));
-
+Armours.push(new Armour("Mithril Armour", 1, 1, "warrior", "Chest", 4));
+Armours.push(new Armour("Wizard Hat", 1, 1, "warrior", "Helmet", 0));
+Armours.push(new Armour("Wizard Hat", 1, 1, "warrior", "Helmet", 1));
+Armours.push(new Armour("Wizard Hat", 1, 1, "warrior", "Helmet", 2));
+Armours.push(new Armour("Wizard Hat", 1, 1, "warrior", "Helmet", 3));
+Armours.push(new Armour("Wizard Hat", 1, 1, "warrior", "Helmet", 4));
 /*
 Potions.push(new Item("Health Potion",  new ItemImage("HealthPotion.png"),  true, false, true,  false, 1, "potion"));
 Potions.push(new Item("Mana Potion",    new ItemImage("ManaPotion.png"),    true, false, true,  false, 1, "potion"));
