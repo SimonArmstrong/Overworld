@@ -53,6 +53,33 @@ Equipment.prototype.MouseOver = function()
 	}
 }
 
+Equipment.prototype.Remove = function(index)
+{
+	if(index === "all")
+	{
+		for (var i = 0; i < this.space; i++)
+		{
+			this.slots.splice(0, i);
+			break;
+		}
+	}
+	else
+	{
+		for (var i = 0; i < this.slots.length; i++)
+		{
+			if(i === index)
+			{
+				this.slots[i].items.splice(this.slots[i].items.length - 1, 1);
+				if(this.slots[i].items.length === 0)
+				{
+					this.slots[i].items.push("undefined");
+				}
+				break;
+			}
+		}
+	}
+}
+
 Equipment.prototype.draw = function()
 {
 	this.helmetSlot.position      = new Vector2(this.position.x + 48, this.position.y + 32);
@@ -69,10 +96,42 @@ Equipment.prototype.draw = function()
 		for(var i = 0; i < this.slots.length; i++)
 		{
 			this.slots[i].draw();
+			
 			if(this.slots[i].MouseOver())
 			{
 				this.highlightedSlot = this.slots[i];
 				context.drawImage(hilightImage, this.slots[i].position.x, this.slots[i].position.y);
+				
+				if(clicked && this.slots[i].items[this.slots[i].items.length - 1] != "undefined" && selectedItem === "undefined")
+				{
+					selectedItemIndex = i;
+					selectedItem = this.highlightedSlot.items[this.slots[i].items.length - 1];
+					this.Remove(i);
+				}
+				else if(!clicked && this.slots[i].items[this.slots[i].items.length - 1] === "undefined" && this.slots[i].exclusiveType === selectedItem.category)
+				{
+					this.highlightedSlot.items[this.slots[i].items.length - 1] = selectedItem;
+					selectedItem = "undefined";
+				}
+				else if(!clicked && this.slots[i].items[this.slots[i].items.length - 1].stackable === true && selectedItem.stackable === true && selectedItem === this.highlightedSlot.items[this.slots[i].items.length - 1])
+				{
+					this.slots[i].items.push(selectedItem);
+					selectedItem = "undefined";
+				}
+				else if(!clicked && this.slots[i].items[this.slots[i].items.length - 1] != "undefined" && selectedItem != "undefined")
+				{
+					if(this.slots[selectedItemIndex].items[this.slots[i].items.length - 1] === "undefined")
+					{
+						this.slots[selectedItemIndex].items[this.slots[i].items.length - 1] = this.highlightedSlot.items[this.slots[i].items.length - 1];
+					}
+					this.highlightedSlot.items[this.slots[i].items.length - 1] = selectedItem;
+					selectedItem = "undefined";
+				}
+				if(this.slots[i].items.length === 0)
+				{
+					dblClicked = false;
+					this.Remove(i);
+				}
 			}
 		}
 	}
@@ -80,6 +139,12 @@ Equipment.prototype.draw = function()
 
 Equipment.prototype.update = function()
 {
+	this.helmetSlot.exclusiveType = "Helmet";
+	this.chestSlot.exclusiveType = "Chest";
+	this.leftHandSlot.exclusiveType = "Shield";
+	this.rightHandSlot.exclusiveType = "Weapon";
+	this.shoeSlot.exclusiveType = "Boots";
+	
 	if(this.open)
 	{
 		if(this.MouseOver() && mouseDOWN === true && selectedItem === "undefined"){

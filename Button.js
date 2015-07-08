@@ -46,11 +46,12 @@ slotImage.src = "slot.png";
 
 var Slot = function(vec_p)
 {
-	this.item = "undefined";
+	//this.item = "undefined";
 	this.image = slotImage;
 	this.size = new Vector2(32, 32);
 	this.position = vec_p;
-	this.amount = 1;
+	this.items = ["undefined"];
+	this.exclusiveType = "undefined";
 }
 
 Slot.prototype.MouseOver = function()
@@ -80,7 +81,10 @@ Slot.prototype.draw = function(style)	// Style = 1: Draw Image		Style = 0: Draw 
 	{
 		context.fillStyle = "#fff";
 		context.drawImage(this.image, this.position.x, this.position.y);
-		if(this.item != "undefined")
-			context.drawImage(this.item.image, this.position.x, this.position.y);
+		if(this.items[this.items.length - 1] != "undefined")
+		{
+			context.drawImage(this.items[this.items.length - 1].image, this.position.x, this.position.y);
+			context.drawImage(this.items[this.items.length - 1].rImage, this.position.x, this.position.y);
+		}
 	}
 }

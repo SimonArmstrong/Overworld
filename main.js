@@ -1,6 +1,6 @@
 var colliders = [];
 
-var chest = new Container([Potions[0], Potions[1]], new Vector2(player.position.x - 64, player.position.y), COMMON);
+var chest = new Container([Potions[0], Potions[1], Weapons[3], Weapons[4]], new Vector2(player.position.x - 64, player.position.y), COMMON);
 
 function checkInput()
 {
@@ -55,20 +55,27 @@ function run()
 	}
 	
 	player.drawUI();
-	player.equipment.draw();
 	player.equipment.update();
+	player.equipment.draw();
+	devInv.draw();
+	devInv.update();
 	
 	if(mouseMoving){
 		context.drawImage(mouseIcon, mousePosition.x, mousePosition.y);
 	}
 	
-	player.health.amount -= 1 * deltaTime;
-	player.mana.amount -= 1 * deltaTime;
-	
 	player.inventory.update();
 	for(var i = 0; i < player.Stats.length; i++)
 	{
 		player.Stats[i].update();
+	}
+	for(var i = 0; i < chests.length; i++)
+	{
+		if(selectedItem != "undefined" && !clicked && chests[i].MouseOver())
+		{
+			chests[i].Add(selectedItem);
+			selectedItem = "undefined";
+		}
 	}
 }
 

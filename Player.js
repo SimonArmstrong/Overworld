@@ -10,6 +10,12 @@ imageRight.src = "player_right.png";
 var imageLeft = document.createElement("img");
 imageLeft.src = "player.png";
 
+//Animations
+var IDLE_LEFT = 0;
+var IDLE_RIGHT = 1;
+var WALK_LEFT = 2;
+var WALK_RIGHT = 3;
+
 var Player = function()
 {
 	//Transform details
@@ -21,7 +27,18 @@ var Player = function()
 	this.ObjectType = "Entity";
 	
 	//Image
-	this.image = imageLeft;
+	this.sprite = new Sprite("player_anim.png");
+	this.sprite.buildAnimation(4, 2, 32, 32, 0.1, [0]);
+	this.sprite.buildAnimation(4, 2, 32, 32, 0.1, [4]);
+	this.sprite.buildAnimation(4, 2, 32, 32, 0.1, 
+								[1,2,3,2,1]);
+	this.sprite.buildAnimation(4, 2, 32, 32, 0.1, 
+								[5,6,7,6,5]);
+								
+	for(var i = 0; i < 5; i++)
+	{
+		this.sprite.setAnimationOffset(i, -this.scale.x/2, -this.scale.y/2);
+	}
 	
 	//Equipment
 	this.equipment = new Equipment();
@@ -29,9 +46,12 @@ var Player = function()
 	
 	//Stats
 	this.inventory = new Inventory(5, 5, "I N V E N T O R Y");
+	
 	this.health = new Stat("Health", 100, 100);
 	this.mana = new Stat("Mana", 100, 100);
 	this.speed = new Stat("Speed", 180, 250);
+	this.experience = new Stat("Exp", 0, 100);
+	this.level = new Stat("Level", 1, 300)
 	this.Stats = [];
 }
 
@@ -83,24 +103,30 @@ Player.prototype.input = function()
 
 Player.prototype.update = function(deltaTime)
 {
+	this.sprite.update(deltaTime);
+	
 	if(this.direction === DIR_UP && this.moving)
 	{
-		this.position.y -= this.speed.amount * deltaTime;
+		this.position.y -= this.speed.maximum * deltaTime;
 	}
 	if(this.direction === DIR_DOWN && this.moving)
 	{
-		this.position.y += this.speed.amount * deltaTime;
+		this.position.y += this.speed.maximum * deltaTime;
 	}
 	if(this.direction === DIR_LEFT && this.moving)
 	{
-		this.position.x -= this.speed.amount * deltaTime;
-		this.image = imageLeft;
+		this.position.x -= this.speed.maximum * deltaTime;
+		this.sprite.setAnimation(WALK_LEFT);
 	}
+	else if(this.direction === DIR_LEFT){this.sprite.setAnimation(IDLE_LEFT);}
 	if(this.direction === DIR_RIGHT && this.moving)
 	{
-		this.image = imageRight;
-		this.position.x += this.speed.amount * deltaTime;
+		this.sprite.setAnimation(WALK_RIGHT);
+		this.position.x += this.speed.maximum * deltaTime;
 	}
+	else if(this.direction === DIR_RIGHT){this.sprite.setAnimation(IDLE_RIGHT);}
+	this.Stats.push(this.level);
+	this.Stats.push(this.experience);
 	this.Stats.push(this.health);
 	this.Stats.push(this.mana);
 	this.Stats.push(this.speed);
@@ -109,7 +135,17 @@ Player.prototype.update = function(deltaTime)
 	{
 		if(this.Stats[i].amount > this.Stats[i].maximum)
 		{
-			this.Stats[i].amount = this.Stats[i].maximum;
+			if(this.Stats[i].name === "Exp")
+			{
+				this.level.amount++;
+				this.Stats[i].maximum = this.Stats[i].maximum + (this.Stats[i].maximum / 4);
+				this.Stats[i].amount = 0;
+				this.LevelUp();
+			}
+			else
+			{
+				this.Stats[i].amount = this.Stats[i].maximum;
+			}
 		}
 		if(this.Stats[i].amount <= 0)
 		{
@@ -118,19 +154,46 @@ Player.prototype.update = function(deltaTime)
 	}
 }
 
+Player.prototype.LevelUp = function()
+{
+	player.health.maximum += player.health.maximum / 2;
+	player.mana.maximum += player.mana.maximum / 2;
+}
+
 Player.prototype.draw = function()
 {
-	context.drawImage(this.image, this.position.x, this.position.y);
+	this.sprite.draw(context, this.position.x, this.position.y)
 }
 
 Player.prototype.drawUI = function()
 {
-	var healthWidth = this.health.maximum;
-	drawRect("#000", new Vector2(canvas.width / 4, 6), new Vector2(128, 8));
-	drawRect("#f00", new Vector2(canvas.width / 4 + 2, 8), new Vector2((this.health.amount / this.health.maximum) * 124, 5));
-	var manaWidth = this.mana.maximum;
-	drawRect("#000", new Vector2(canvas.width / 4, 16), new Vector2(128, 8));
-	drawRect("#00f", new Vector2(canvas.width / 4 + 2, 18), new Vector2((this.mana.amount / this.mana.maximum) * 124, 5));
+	var UIposition = new Vector2(canvas.width / 4, 8);
+	
+	context.fillStyle = "#fff";
+	context.font = "24px Trebuchet MS";
+	context.fillText("LV. " + this.level.amount, UIposition.x - 128, UIposition.y + 24);
+	drawRect("#333", new Vector2(UIposition.x - 20, UIposition.y), new Vector2(196, 32));
+	context.font = "8px Verdana";
+	
+	context.fillStyle = "#fff";
+	context.fillText("HP:", UIposition.x - 16, UIposition.y + 9);
+	drawRect("#000", new Vector2(UIposition.x, UIposition.y + 2), new Vector2(128, 8));
+	drawRect("#f00", new Vector2(UIposition.x + 2, UIposition.y + 4), new Vector2((this.health.amount / this.health.maximum) * 124, 5));
+	context.fillStyle = "#fff";
+	context.fillText(Math.floor(this.health.amount) + "/" + Math.floor(this.health.maximum), UIposition.x + 130, UIposition.y + 9);
+	
+	context.fillText("MP:", UIposition.x - 16, UIposition.y + 19);
+	drawRect("#000", new Vector2(UIposition.x, UIposition.y + 12), new Vector2(128, 8));
+	drawRect("#00f", new Vector2(UIposition.x + 1, UIposition.y + 14), new Vector2((this.mana.amount / this.mana.maximum) * 124 + 1, 5));
+	context.fillStyle = "#fff";
+	context.fillText(Math.floor(this.mana.amount) + "/" + Math.floor(this.mana.maximum), UIposition.x + 130, UIposition.y + 19);
+	
+	context.fillText("XP:", UIposition.x - 16, UIposition.y + 29);
+	drawRect("#000", new Vector2(UIposition.x, UIposition.y + 22), new Vector2(128, 8));
+	drawRect("#ff0", new Vector2(UIposition.x + 2, UIposition.y + 24), new Vector2((this.experience.amount / this.experience.maximum) * 124, 5));
+	context.fillStyle = "#fff";
+	context.fillText(Math.floor(this.experience.amount) + "/" + Math.floor(this.experience.maximum), UIposition.x + 130, UIposition.y + 29);
+	
 	player.hotbar.draw();
 }
 

@@ -46,7 +46,13 @@ Hotbar.prototype.Remove = function(index)
 		{
 			if(i === index)
 			{
-				this.slots[i].item = "undefined";
+				this.slots[i].items.splice( this.slots[i].items.length - 1, 1);
+				
+				if(this.slots[i].items.length === 0)
+				{
+					this.slots[i].items.push("undefined");
+				}
+				//this.slots[i].items[i] = "undefined";
 				//console.log("Added " + item.name + " to slot " + i)
 				break;
 			}
@@ -62,6 +68,7 @@ Hotbar.prototype.draw = function()
 		for(var i = 0; i < this.slots.length; i++)
 		{
 			this.slots[i].draw();
+			this.slots[i].exclusiveType = "Potion";
 			context.fillText(i + 1, this.position.x + 8 + (34 * i), this.position.y + 34);
 			
 			if(this.slots[i].MouseOver())
@@ -69,42 +76,42 @@ Hotbar.prototype.draw = function()
 				this.highlightedSlot = this.slots[i];
 				context.drawImage(hilightImage, this.slots[i].position.x, this.slots[i].position.y);
 				
-				if(dblClicked && this.slots[i].item.useable)
+				if(dblClicked && this.slots[i].items[this.slots[i].items.length - 1].useable)
 				{
-					if(this.slots[i].item.amount >= 1)
-					{
-						this.slots[i].item.use();
-						dblClicked = false;
-						this.slots[i].item.amount --;
-					}
+					this.slots[i].items[this.slots[i].items.length - 1].use();
+					dblClicked = false;
+					this.Remove(i);
 				}
-				else if(clicked && this.slots[i].item != "undefined" && selectedItem === "undefined")
+				else if(clicked && this.slots[i].items[this.slots[i].items.length - 1] != "undefined" && selectedItem === "undefined")
 				{
 					selectedItemIndex = i;
-					selectedItem = this.highlightedSlot.item;
+					selectedItem = this.highlightedSlot.items[this.slots[i].items.length - 1];
 					//this.slots[i].amount -= this.slots[i].item.amount;
 					this.Remove(i);
 				}
-				else if(!clicked && this.slots[i].item === "undefined")
+				else if(!clicked && this.slots[i].items[this.slots[i].items.length - 1] === "undefined" && this.slots[i].exclusiveType === selectedItem.category)
 				{
 					//this.highlightedSlot.item.amount += this.selectedItem.amount;
-					this.highlightedSlot.item = selectedItem;
+					this.highlightedSlot.items[this.slots[i].items.length - 1] = selectedItem;
 					
 					selectedItem = "undefined";
 				}
-				else if(!clicked && this.slots[i].item.stackable === true && selectedItem.stackable === true && selectedItem === this.highlightedSlot.item)
+				else if(!clicked && this.slots[i].items[this.slots[i].items.length - 1].stackable === true && selectedItem.stackable === true && selectedItem === this.highlightedSlot.items[this.slots[i].items.length - 1])
 				{
-					this.slots[i].item.amount += selectedItem.amount;
+					this.slots[i].items.push(selectedItem);
 					selectedItem = "undefined";
 				}
-				else if(!clicked && this.slots[i].item != "undefined" && selectedItem != "undefined")
+				else if(!clicked && this.slots[i].items[this.slots[i].items.length - 1] != "undefined" && selectedItem != "undefined")
 				{
-					this.slots[selectedItemIndex].item = this.highlightedSlot.item;
-					this.highlightedSlot.item = selectedItem;
+					if(this.slots[selectedItemIndex].items[this.slots[i].items.length - 1] === "undefined")
+					{
+						this.slots[selectedItemIndex].items[this.slots[i].items.length - 1] = this.highlightedSlot.items[this.slots[i].items.length - 1];
+					}
+					this.highlightedSlot.items[this.slots[i].items.length - 1] = selectedItem;
 					selectedItem = "undefined";
 					//this.selectedItem = this.highlightedSlot.item;
 				}
-				if(this.slots[i].item.amount === 0)
+				if(this.slots[i].items.length === 0)
 				{
 					dblClicked = false;
 					this.Remove(i);
@@ -121,53 +128,83 @@ Hotbar.prototype.draw = function()
 		}
 		if(Input.keys[Input.ZERO] === true)
 		{
-			if(this.slots[9].item != "undefined")
-				this.slots[9].item.use();
+			if(this.slots[9].items[this.slots[9].items.length - 1] != "undefined")
+			{
+				this.slots[9].items[this.slots[9].items.length - 1].use();
+				this.Remove(9);
+			}
 		}
 		if(Input.keys[Input.ONE] === true)
 		{
-			if(this.slots[0].item != "undefined")
-				this.slots[0].item.use();
+			if(this.slots[0].items[this.slots[0].items.length - 1] != "undefined")
+			{
+				this.slots[0].items[this.slots[0].items.length - 1].use();
+				this.Remove(0);
+			}
 		}
 		if(Input.keys[Input.TWO] === true)
 		{
-			if(this.slots[1].item != "undefined")
-				this.slots[1].item.use();
+			if(this.slots[1].items[this.slots[1].items.length - 1] != "undefined")
+			{
+				this.slots[1].items[this.slots[1].items.length - 1].use();
+				this.Remove(1);
+			}
 		}
 		if(Input.keys[Input.THREE] === true)
 		{
-			if(this.slots[2].item != "undefined")
-				this.slots[2].item.use();
+			if(this.slots[2].items[this.slots[2].items.length - 1] != "undefined")
+			{
+				this.slots[2].items[this.slots[2].items.length - 1].use();
+				this.Remove(2);
+			}
 		}
 		if(Input.keys[Input.FOUR] === true)
 		{
-			if(this.slots[3].item != "undefined")
-				this.slots[3].item.use();
+			if(this.slots[3].items[this.slots[3].items.length - 1] != "undefined")
+			{
+				this.slots[3].items[this.slots[3].items.length - 1].use();
+				this.Remove(3);
+			}
 		}
 		if(Input.keys[Input.FIVE] === true)
 		{
-			if(this.slots[4].item != "undefined")
-				this.slots[4].item.use();
+			if(this.slots[4].items[this.slots[4].items.length - 1] != "undefined")
+			{
+				this.slots[4].items[this.slots[4].items.length - 1].use();
+				this.Remove(4);
+			}
 		}
 		if(Input.keys[Input.SIX] === true)
 		{
-			if(this.slots[5].item != "undefined")
-				this.slots[5].item.use();
+			if(this.slots[5].items[this.slots[5].items.length - 1] != "undefined")
+			{
+				this.slots[5].items[this.slots[5].items.length - 1].use();
+				this.Remove(5);
+			}
 		}
 		if(Input.keys[Input.SEVEN] === true)
 		{
-			if(this.slots[6].item != "undefined")
-				this.slots[6].item.use();
+			if(this.slots[6].items[this.slots[6].items.length - 1] != "undefined")
+			{
+				this.slots[6].items[this.slots[6].items.length - 1].use();
+				this.Remove(6);
+			}
 		}
 		if(Input.keys[Input.EIGHT] === true)
 		{
-			if(this.slots[7].item != "undefined")
-				this.slots[7].item.use();
+			if(this.slots[7].items[this.slots[7].items.length - 1] != "undefined")
+			{
+				this.slots[7].items[this.slots[7].items.length - 1].use();
+				this.Remove(7);
+			}
 		}
 		if(Input.keys[Input.NINE] === true)
 		{
-			if(this.slots[8].item != "undefined")
-				this.slots[8].item.use();
+			if(this.slots[8].items[this.slots[8].items.length - 1] != "undefined")
+			{
+				this.slots[8].items[this.slots[8].items.length - 1].use();
+				this.Remove(8);
+			}
 		}
 	}
 }
