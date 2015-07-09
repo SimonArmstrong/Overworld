@@ -122,7 +122,7 @@ var Recipe = function(name, itemA, itemB, rarity)
 Potions.push(new Potion("Health Potion", "Health", 80, "Potion", 1));
 Potions.push(new Potion("Mana Potion", "Mana", 80, "Potion", 1));
 Potions.push(new Potion("Health Cauldron", "Health", 100000, "Potion", 3));
-Potions.push(new Potion("EXP Potion", "Exp", 50, "Potion", 4));
+Potions.push(new Potion("EXP potion", "Exp", 50, "Potion", 4));
 Potions.push(new Potion("Fried Egg", "Health", 30, "Potion", 0));
 Potions.push(new Potion("Hamburger", "Health", 40, "Potion", 0));
 Potions.push(new Potion("Cheese Toastie", "Health", 50, "Potion", 0));
