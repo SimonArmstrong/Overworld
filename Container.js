@@ -15,6 +15,9 @@ var greatChestLidImage = document.createElement("img");
 var uniqueChestLidImage = document.createElement("img");
 var legendaryChestLidImage = document.createElement("img");
 
+var shadowImage = document.createElement("img");
+shadowImage.src = "chestShadow.png";
+
 commonChestImage.src 	    = "commonChest.png";
 rareChestImage.src 		    = "rareChest.png";
 greatChestImage.src		    = "greatChest.png";
@@ -22,10 +25,10 @@ uniqueChestImage.src	    = "uniqueChest.png";
 legendaryChestImage.src     = "legendaryChest.png";
 
 commonChestLidImage.src 	= "commonChestLid.png";
-rareChestLidImage.src 		= "commonChestLid.png";
-greatChestLidImage.src 		= "commonChestLid.png";
-uniqueChestLidImage.src		= "commonChestLid.png";
-legendaryChestLidImage.src	= "commonChestLid.png";
+rareChestLidImage.src 		= "rareChestLid.png";
+greatChestLidImage.src 		= "greatChestLid.png";
+uniqueChestLidImage.src		= "uniqueChestLid.png";
+legendaryChestLidImage.src	= "legendaryChestLid.png";
 
 var Container = function(contents, vec_p, r)
 {
@@ -42,33 +45,35 @@ var Container = function(contents, vec_p, r)
 	this.image;
 	this.closedImage;
 	this.collider = new Collider(this.position.x, this.position.y, 32, 32);
-	switch(this.rarity)
+	if(this.rarity >= 150)
 	{
-		case COMMON:
-			this.closedImage = commonChestLidImage;
-			this.image = commonChestImage;
-			this.inventory = new Inventory(2, 2, "COMMON CHEST");
-		break;
-		case RARE:
-			this.closedImage = rareChestLidImage;
-			this.image = rareChestImage;
-			this.inventory = new Inventory(2, 3, "RARE CHEST");
-		break;
-		case GREAT:
-			this.closedImage = greatChestLidImage;
-			this.image = greatChestImage;
-			this.inventory = new Inventory(2, 4, "GREAT CHEST");
-		break;
-		case UNIQUE:
-			this.closedImage = uniqueChestLidImage;
-			this.image = uniqueChestImage;
-			this.inventory = new Inventory(3, 4, "UNIQUE CHEST");
-		break;
-		case LEGENDARY:
-			this.closedImage = legendaryChestLidImage;
-			this.image = legendaryChestImage;
-			this.inventory = new Inventory(5, 5, "LEGENDARY CHEST");
-		break;	
+		this.closedImage = commonChestLidImage;
+		this.image = commonChestImage;
+		this.inventory = new Inventory(2, 3, "COMMON CHEST");
+	}
+	else if(this.rarity >= 60)
+	{
+		this.closedImage = rareChestLidImage;
+		this.image = commonChestImage;
+		this.inventory = new Inventory(2, 3, "RARE CHEST");
+	}
+	else if(this.rarity >= 15)
+	{
+		this.closedImage = greatChestLidImage;
+		this.image = commonChestImage;
+		this.inventory = new Inventory(2, 2, "GREAT CHEST");
+	}
+	else if(this.rarity >= 2)
+	{
+		this.closedImage = uniqueChestLidImage;
+		this.image = commonChestImage;
+		this.inventory = new Inventory(2, 1, "UNIQUE CHEST");
+	}
+	else
+	{
+		this.closedImage = legendaryChestLidImage;
+		this.image = commonChestImage;
+		this.inventory = new Inventory(1, 1, "LEGENDARY CHEST");	
 	}
 }
 
@@ -88,7 +93,7 @@ Container.prototype.Open = function()
 		this.inventory.Add(this.contents[i], "nearest");
 	}
 	this.contents = [];
-	this.inventory.position = this.position;
+	this.inventory.position = new Vector2(this.position.x - (this.inventory.scale.x / 2) + (this.scale.x / 2), this.position.y - this.inventory.scale.y + 8);
 	this.inventory.open = true;
 	return true;
 }
@@ -114,11 +119,14 @@ Container.prototype.Add = function(item)
 
 Container.prototype.draw = function()
 {
+	context.drawImage(shadowImage, this.position.x, this.position.y);
 	context.drawImage(this.image, this.position.x, this.position.y);
+	
 	if(this.inventory.open === false)
 	{
 		context.drawImage(this.closedImage, this.position.x, this.position.y);
 	}
+	
 	if(this.inventory.open === true && Input.keys[Input.F])
 	{
 		for(var i = 0; i < this.contents.length; i++)

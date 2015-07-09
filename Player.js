@@ -15,6 +15,7 @@ var IDLE_LEFT = 0;
 var IDLE_RIGHT = 1;
 var WALK_LEFT = 2;
 var WALK_RIGHT = 3;
+var ATTACK_LEFT = 4;
 
 var Player = function()
 {
@@ -26,7 +27,7 @@ var Player = function()
 	this.moving = false;
 	this.ObjectType = "Entity";
 	
-	//Image
+	//Player Image
 	this.sprite = new Sprite("player_anim.png");
 	this.sprite.buildAnimation(4, 2, 32, 32, 0.1, [0]);
 	this.sprite.buildAnimation(4, 2, 32, 32, 0.1, [4]);
@@ -34,10 +35,38 @@ var Player = function()
 								[1,2,3,2,1]);
 	this.sprite.buildAnimation(4, 2, 32, 32, 0.1, 
 								[5,6,7,6,5]);
+	this.lsprite = new Sprite("player_anim_lower.png");
+	this.lsprite.buildAnimation(4, 2, 32, 32, 0.1, [0]);
+	this.lsprite.buildAnimation(4, 2, 32, 32, 0.1, [4]);
+	this.lsprite.buildAnimation(4, 2, 32, 32, 0.1, 
+								[1,2,3,2,1]);
+	this.lsprite.buildAnimation(4, 2, 32, 32, 0.1, 
+								[5,6,7,6,5]);
+								
+	//player Sword
+	this.sSprite = new Sprite("player_anim_sword_Steel Sword.png");
+	this.sSprite.buildAnimation(4, 2, 32, 32, 0.1, [0]);
+	this.sSprite.buildAnimation(4, 2, 32, 32, 0.1, [4]);
+	this.sSprite.buildAnimation(4, 2, 32, 32, 0.1, 
+								[1,2,3,2,1]);
+	this.sSprite.buildAnimation(4, 2, 32, 32, 0.1, 
+								[5,6,7,6,5]);
+								
+	//player Shield
+	this.shSprite = new Sprite("player_anim_shield_Iron Shield.png");
+	this.shSprite.buildAnimation(4, 2, 32, 32, 0.1, [0]);
+	this.shSprite.buildAnimation(4, 2, 32, 32, 0.1, [4]);
+	this.shSprite.buildAnimation(4, 2, 32, 32, 0.1, 
+								[1,2,3,2,1]);
+	this.shSprite.buildAnimation(4, 2, 32, 32, 0.1, 
+								[5,6,7,6,5]);
 								
 	for(var i = 0; i < 5; i++)
 	{
 		this.sprite.setAnimationOffset(i, -this.scale.x/2, -this.scale.y/2);
+		this.sSprite.setAnimationOffset(i, -this.scale.x/2, -this.scale.y/2);
+		this.shSprite.setAnimationOffset(i, -this.scale.x/2, -this.scale.y/2);
+		this.lsprite.setAnimationOffset(i, -this.scale.x/2, -this.scale.y/2);
 	}
 	
 	//Equipment
@@ -46,42 +75,66 @@ var Player = function()
 	
 	//Stats
 	this.inventory = new Inventory(5, 5, "I N V E N T O R Y");
+	this.isDead = false;
 	
+	//Base
+	this.strength = new Stat("STR", 5, 200);
+	this.dexterity = new Stat("DEX", 5, 200);
+	this.intelligence = new Stat("INT", 5, 200);
+	this.luck = new Stat("LUK", 5, 200);
+	
+	//Vitals
 	this.health = new Stat("Health", 100, 100);
 	this.mana = new Stat("Mana", 100, 100);
+	this.attack = new Stat("Attack", 1, 200);
+	this.defence = new Stat("Defence", 1, 200);
+	this.mAttack = new Stat("Magic Attack", 1, 200);
+	this.accuracy = new Stat("Accuracy", 1, 200);
 	this.speed = new Stat("Speed", 180, 250);
+	
+	//Level
 	this.experience = new Stat("Exp", 0, 100);
 	this.level = new Stat("Level", 1, 300)
+	
+	//Stat array
 	this.Stats = [];
+	this.bStats = [];
 }
 
 Player.prototype.input = function()
 {
-	if(Input.KeyDown(Input.KEY_W))
+	if(player.isDead === false)
 	{
-		this.moving = true;
-		this.direction = DIR_UP;
-	}
-	else if(Input.KeyDown(Input.KEY_S))
-	{
-		this.moving = true;
-		this.direction = DIR_DOWN;
-	}
-	else if(Input.KeyDown(Input.KEY_A))
-	{
-		this.moving = true;
-		this.direction = DIR_LEFT;
-	}
-	else if(Input.KeyDown(Input.KEY_D))
-	{
-		this.moving = true;
-		this.direction = DIR_RIGHT;
+		if(Input.KeyDown(Input.KEY_UP))
+		{
+			this.moving = true;
+			this.direction = DIR_UP;
+		}
+		else if(Input.KeyDown(Input.KEY_DOWN))
+		{
+			this.moving = true;
+			this.direction = DIR_DOWN;
+		}
+		else if(Input.KeyDown(Input.KEY_LEFT))
+		{
+			this.moving = true;
+			this.direction = DIR_LEFT;
+		}
+		else if(Input.KeyDown(Input.KEY_RIGHT))
+		{
+			this.moving = true;
+			this.direction = DIR_RIGHT;
+		}
+		else
+		{
+			this.moving = false;
+		}
 	}
 	else
 	{
 		this.moving = false;
 	}
-	
+		
 	if(Input.keys[Input.I] === true && this.inventory.open === false)
 	{
 		this.inventory.open = true;
@@ -99,11 +152,30 @@ Player.prototype.input = function()
 	{
 		this.equipment.open = false;
 	}
+	
+	if(Input.keys[Input.SHIFT] === true)
+	{
+		
+	}
 }
 
 Player.prototype.update = function(deltaTime)
 {
+	this.collider.position = new Vector2(this.position.x - 4, this.position.y + 12);
+	this.collider.scale = new Vector2(8, 4);
+	if(this.equipment.righthand != "undefined")
+	{
+		this.sSprite.image.src = "player_anim_sword_" + this.equipment.righthand.name + ".png";
+	}
+	if(this.equipment.lefthand != "undefined")
+	{
+		this.shSprite.image.src = "player_anim_shield_" + this.equipment.lefthand.name + ".png";
+	}
+	this.lsprite.update(deltaTime);
 	this.sprite.update(deltaTime);
+	this.sSprite.update(deltaTime);
+	this.shSprite.update(deltaTime);
+	
 	
 	if(this.direction === DIR_UP && this.moving)
 	{
@@ -117,19 +189,47 @@ Player.prototype.update = function(deltaTime)
 	{
 		this.position.x -= this.speed.maximum * deltaTime;
 		this.sprite.setAnimation(WALK_LEFT);
+		this.sSprite.setAnimation(WALK_LEFT);
+		this.shSprite.setAnimation(WALK_LEFT);
+		this.lsprite.setAnimation(WALK_LEFT);
 	}
-	else if(this.direction === DIR_LEFT){this.sprite.setAnimation(IDLE_LEFT);}
+	else if(this.direction === DIR_LEFT)
+	{
+		this.sprite.setAnimation(IDLE_LEFT); 
+		this.sSprite.setAnimation(IDLE_LEFT);
+		this.shSprite.setAnimation(IDLE_LEFT);
+		this.lsprite.setAnimation(IDLE_LEFT);
+	}
 	if(this.direction === DIR_RIGHT && this.moving)
 	{
 		this.sprite.setAnimation(WALK_RIGHT);
+		this.sSprite.setAnimation(WALK_RIGHT);
+		this.shSprite.setAnimation(WALK_RIGHT);
+		this.lsprite.setAnimation(WALK_RIGHT);
 		this.position.x += this.speed.maximum * deltaTime;
 	}
-	else if(this.direction === DIR_RIGHT){this.sprite.setAnimation(IDLE_RIGHT);}
+	else if(this.direction === DIR_RIGHT)
+	{
+		this.sprite.setAnimation(IDLE_RIGHT); 
+		this.sSprite.setAnimation(IDLE_RIGHT);
+		this.shSprite.setAnimation(IDLE_RIGHT);
+		this.lsprite.setAnimation(IDLE_RIGHT);
+	}
+	
 	this.Stats.push(this.level);
 	this.Stats.push(this.experience);
 	this.Stats.push(this.health);
 	this.Stats.push(this.mana);
+	this.Stats.push(this.attack);
+	this.Stats.push(this.mAttack);
+	this.Stats.push(this.accuracy);
+	this.Stats.push(this.defence);
 	this.Stats.push(this.speed);
+	
+	this.bStats.push(this.strength);
+	this.bStats.push(this.dexterity);
+	this.bStats.push(this.intelligence);
+	this.bStats.push(this.luck);
 	
 	for(var i = 0; i < this.Stats.length; i++)
 	{
@@ -162,7 +262,20 @@ Player.prototype.LevelUp = function()
 
 Player.prototype.draw = function()
 {
-	this.sprite.draw(context, this.position.x, this.position.y)
+	if(player.isDead === false)
+	{
+		context.drawImage(shadowImage, this.position.x - 16, this.position.y - 14);
+		if(this.equipment.rightHandSlot.items[0] != "undefined")
+		{
+			this.sSprite.draw(context, this.position.x, this.position.y);
+		}
+		this.lsprite.draw(context, this.position.x, this.position.y);
+		this.sprite.draw(context, this.position.x, this.position.y);
+		if(this.equipment.leftHandSlot.items[0] != "undefined")
+		{
+			this.shSprite.draw(context, this.position.x, this.position.y);
+		}
+	}
 }
 
 Player.prototype.drawUI = function()

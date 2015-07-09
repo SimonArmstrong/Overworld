@@ -5,17 +5,19 @@ var Equipment = function()
 	this.title = "E Q U I P M E N T";
 	this.open = false;
 	
-	this.helmet;
-	this.chest;
-	this.lefthand;
-	this.righthand;
-	this.boots;
+
 	
 	this.helmetSlot = new Slot(new Vector2(this.position.x + 48, this.position.y + 32));
 	this.chestSlot = new Slot(new Vector2(this.position.x + 48, this.position.y + 74));
 	this.leftHandSlot = new Slot(new Vector2(this.position.x + 8, this.position.y + 74));
 	this.rightHandSlot = new Slot(new Vector2(this.position.x + 88, this.position.y + 74));
 	this.shoeSlot = new Slot(new Vector2(this.position.x + 48, this.position.y + 114));
+	
+	this.helmet		= "undefined";
+	this.chest		= "undefined";
+	this.lefthand	= "undefined";
+	this.righthand	= "undefined";
+	this.boots		= "undefined";
 	
 	this.slots = [];
 	this.slots.push(this.helmetSlot);
@@ -154,6 +156,19 @@ Equipment.prototype.draw = function()
 
 Equipment.prototype.update = function()
 {
+	if(this.helmetSlot.items[0] != "undefined")
+	{
+		this.helmet = 	 this.helmetSlot.items[0];
+	}
+	if(this.chestSlot.items[0] != "undefined")
+		this.chest = 	 this.chestSlot.items[0];
+	if(this.leftHandSlot.items[0] != "undefined")
+		this.lefthand =  this.leftHandSlot.items[0];
+	if(this.rightHandSlot.items[0] != "undefined")
+		this.righthand = this.rightHandSlot.items[0];
+	if(this.shoeSlot.items[0] != "undefined")
+		this.boots = 	 this.shoeSlot.items[0];
+	
 	this.helmetSlot.exclusiveType = "Helmet";
 	this.chestSlot.exclusiveType = "Chest";
 	this.leftHandSlot.exclusiveType = "Shield";
